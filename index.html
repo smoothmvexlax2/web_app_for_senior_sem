@@ -1,0 +1,354 @@
+<?php
+	session_start();
+	$cookie_name = "fitfo";
+	$date = date("Y/m/d H:s");
+	if ( !isset($_SESSION['visits_history']) ) {
+		$_SESSION['visits_history'] = array();
+	}
+	if(!isset($_COOKIE["fitfo"])) 
+	{
+		$cookie_value = 1;
+		setcookie($cookie_name, $cookie_value, time() + (86400 * 30*365), "/"); // 86400 = 1 day
+		$sessinfo = array( 0,$_SERVER[REMOTE_ADDR], $date, $_SERVER[REMOTE_PORT], $_SERVER[HTTP_USER_AGENT]);
+		array_push($_SESSION['visits_history'], $sessinfo);
+	} 
+	else 
+	{
+		$cookie_value = $_COOKIE["fitfo"];
+		setcookie($cookie_name, $cookie_value, time() - 3600);
+		$cookie_value += 1;
+		setcookie($cookie_name, $cookie_value, time() + (86400 * 30*365), "/");
+		$sessinfo = array(count($_SESSION['visits_history']), $_SERVER[REMOTE_ADDR], $date, $_SERVER[REMOTE_PORT], $_SERVER[HTTP_USER_AGENT]);
+		array_push($_SESSION['visits_history'], $sessinfo);
+	}
+
+?>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="cs488 project">
+  <meta name="keywords" content="HTML, CS488, Server">
+  <meta name="author" content="Ben Heitkotter">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>"PageHeitkotter"</title>
+  
+  <link rel="stylesheet" type="text/css" href="normalize.css">
+  <link rel="stylesheet" type="text/css" href="styles.css">
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <style>
+		header{
+		background-color: #00008B;
+		font-family: "Trebuchet MS", Helvetica, sans-serif;
+		color: white;
+		}
+		
+		caption{
+		text-transform: uppercase;
+		font-weight: bold;
+		font-size: 16px
+		}
+		
+		table{
+		background-color: #FF0000;
+		}
+		
+		th, td{
+		height: 30px;
+    	vertical-align: bottom;
+		text-align: center;
+		padding: 10px;
+		border-bottom: 2px solid #FFFFFF;
+		
+		}
+		
+		nav{
+		background-color: #00008B;
+		display: inline;
+		color: white;
+		}
+		
+		ul{
+		border: 1px solid #FFF8DC;
+		
+		}
+		
+		li{
+		text-align: center;
+		border-bottom: 1px solid #FFF8DC;
+		}
+		
+		li:last-child 
+		{
+		border-bottom: none;
+		}		 
+		p.id{
+		background-color: #696969;
+		float:left;
+		width: 50%;}
+		
+		p.other{
+		background-color: #696969;
+		float:right;
+		width: 50%;
+		}
+  </style>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script type="text/javascript">
+	window.onload = function heading()
+	{
+		var vis = '<?=$_COOKIE["fitfo"];?>';
+		
+		if (vis >= 1) {
+			document.getElementById("change").innerHTML = "Welcome Back, you have visited "+ vis +" times";
+		};
+
+	
+		var w = screen.width;
+		var h = screen.height;
+		var pixels = w*h;
+		var div1 = document.getElementById("divider1");
+		var div2 = document.getElementById("divider2");
+		var div3 = document.getElementById("divider3");
+		if(pixels < 768){
+			div1.className= "col-xs-4";
+			div2.className= "col-xs-4";
+			div3.className= "col-xs-2";
+		}
+		else if( 768<= pixels < 992){
+			div1.className= "col-sm-4";
+			div2.className= "col-sm-4";
+			div3.className= "col-sm-2";
+		}
+		else if( 992<= pixels < 1200){
+			div1.className= "col-md-4";
+			div2.className= "col-md-4";
+			div3.className= "col-md-2";
+		}
+		else{
+			div1.className= "col-lg-4";
+			div2.className= "col-lg-4";
+			div3.className= "col-lg-2";
+		}
+	};
+	
+	function ajax_call(obj) {
+				console.log(obj);
+				var chosenone = obj.options.selectedIndex;
+				console.log(chosenone);
+				var hist_id = obj.options[chosenone].value;
+				var server_script = 'ajaxserver.php?selected='+hist_id;
+				console.log(hist_id);
+				if (hist_id>0)
+				{
+					$.ajax({
+						type: 'GET',
+						url: server_script,
+						dataType: 'json',
+						error: error_callback,
+						success: success_callback,
+					});
+				}
+				
+				else{
+					document.getElementById('dump').innerHTML= "";
+				}
+			}
+     
+     
+			function success_callback(res) {
+				document.getElementById('dump').innerHTML= "The Remote Address is "+res[1]+", they accessed the site on " +res[2]+", using a remote port of "+res[3]+", and the user agent is "+res[4];
+			}
+     
+     
+			function error_callback(req, status, err) {
+				console.log("OOPS: " , req, status, err )
+			}
+	</script> 
+</head>
+<body>
+	<form name="login" id="login" method="POST" action="login.php" novalidate><!-- need action -->
+	<div class="container">
+		<div class="row">
+			<div id="divider1">
+				<label for="usr_name">Please Enter Your Username:</label> 
+				<input id="usr_name" type="text" name="usr_name" class="form-control" placeholder="my@email.com"/>
+				<a href="http://csci.lakeforest.edu/~heitkotterbj/csci488/newperson">create account</a>
+			</div>
+			<div id="divider2">
+				<label for="pw">Password:</label> 
+				<input id="pw" type="password" name="pw" class="form-control" placeholder="*****"/> 
+			</div>
+			<div id="divider3">
+				<label for="sub"></label> 
+				<input id="sub" class="form-control" type="submit"/>
+			</div>
+		</div>
+	</div>
+	</form>
+	
+  <div id="page_wrapper" >
+    <header>
+      <h1>Take a Seat!</h1>
+	  <h2 id="change">Welcome, Thanks For Visiting My Page</h2>
+	  <h3>Created in a Senior Seminar Computer Science course</h3>
+    </header>
+	<nav>
+		<ul>
+			<li><a href="http://csci.lakeforest.edu/~heitkotterbj/csci488/lesson2">Version 1 of this page</a></li>
+			<li><a href="http://csci.lakeforest.edu/~heitkotterbj/csci488/draftingcss">StyleSheetconstruction</a></li>
+			<li><a href="http://csci.lakeforest.edu/~heitkotterbj/csci488/nativejs">javascriptpractice</a></li>
+			<li><a href="http://csci.lakeforest.edu/~heitkotterbj/csci488/jsonintro">Jsonwork</a></li>
+			<li><a href="http://csci.lakeforest.edu/~heitkotterbj/csci488/jquery_nav">jquery</a></li>
+			<li><a href="http://csci.lakeforest.edu/~heitkotterbj/csci488/htmlformspage">Htmlform</a></li>
+			<li><a href="http://csci.lakeforest.edu/~heitkotterbj/csci488/jqueryanim_nav">jquery2</a></li>
+			<li><a href="http://csci.lakeforest.edu/~heitkotterbj/csci488/mathssharmonic">harmonic presentation</a></li>
+			<li><a href="http://csci.lakeforest.edu/~heitkotterbj/csci488/ajax_history">AJAX</a></li>
+			<li><a href="http://csci.lakeforest.edu/~heitkotterbj/csci488/individualpres">individual presentation</a></li>
+			
+		</ul>
+	</nav>
+	<div id="dump"></div>
+    <section>
+      <p class="id">The <b>purpose</b> for this page is to practice web application development with software engineering principles.
+		Homework will be posted, along with links and portals. 
+	  </p>
+	  <p class="other"> The idea is to build functionality and have a connection with a database.
+		<small>Not to make things beautiful.</small> 
+	  </p>
+	  <br><br>
+      <table>
+		<caption> Major Courses Taken </caption>
+  		<tr>
+    		<th>Department</th>
+    		<th>Course Name</th>
+			<th>Course Number</th>
+  		</tr>
+		<tbody>
+   		<tr>
+			<td>CSCI</td>
+    		<td>Computer Science I</td>
+    		<td>112</td>
+   		</tr>
+		<tr>
+			<td>CSCI</td>
+    		<td>Computer Science II</td>
+    		<td>212</td>
+   		</tr>
+		<tr>
+			<td>CSCI</td>
+    		<td>Intro to Computer Aechitecture</td>
+    		<td>213</td>
+  		</tr>
+		<tr>
+			<td>CSCI</td>
+    		<td>Data Structures and Algorithms</td>
+    		<td>317</td>
+  		</tr>
+		<tr>
+			<td>CSCI</td>
+    		<td>Programming Languages</td>
+    		<td>318</td>
+  		</tr>
+		<tr>
+			<td>CSCI</td>
+    		<td>Introduction to Database Systems</td>
+    		<td>427</td>
+  		</tr>
+		<tr>
+			<td>CSCI</td>
+    		<td>Senior Seminar</td>
+    		<td>488</td>
+  		</tr>
+		<tr>
+			<td>CSCI</td>
+    		<td>Artifical Intelligence <i>(Spring 2018)</i></td>
+    		<td>325</td>
+  		</tr>
+		<tr>
+			<td>Math</td>
+    		<td>Calculus I</td>
+    		<td>110</td>
+  		</tr>
+		<tr>
+			<td>Math</td>
+    		<td>Calculus II</td>
+    		<td>111</td>
+  		</tr>
+		<tr>
+			<td>Math</td>
+    		<td>Multivariable Calculus</td>
+    		<td>210</td>
+  		</tr>
+		<tr>
+			<td>Math</td>
+    		<td>Differential Equations</td>
+    		<td>214</td>
+  		</tr>
+		<tr>
+			<td>Math</td>
+    		<td>Abstract and Discrete Math</td>
+    		<td>230</td>
+  		</tr>
+		<tr>
+			<td>Math</td>
+    		<td>Linear Algebra</td>
+    		<td>231</td>
+  		</tr>
+		<tr>
+			<td>Math</td>
+    		<td>Introduction Real Analysis</td>
+    		<td>311</td>
+  		</tr>
+		<tr>
+			<td>Math</td>
+    		<td>Modern Algebra</td>
+    		<td>330</td>
+  		</tr>
+		<tr>
+			<td>Math</td>
+    		<td>Mathematical Probability</td>
+    		<td>350</td>
+  		</tr>
+		<tr>
+			<td>Math</td>
+    		<td>Mathematical Statistics<i>(Spring 2018)</i></td>
+    		<td>351</td>
+  		</tr>
+		<tr>
+			<td>Math</td>
+    		<td>Great Theorems of Mathematics</td>
+    		<td>499</td>
+  		</tr>
+		</tbody>
+		<tfoot>
+		<tr>
+			<td><a href="https://www.lakeforest.edu/academics/programs/math/">Math/CSCI Department Page</a>
+			<a href="https://www.lakeforest.edu/"><img src="lfclogo.png" alt="LFC Icon" style="width:50px;height:50px;"></a> 
+			</td>
+		</tr>
+		</tfoot>
+		</table> 
+        
+    </section>
+	<div id="drop">
+		<form>
+			<select name="selected" onchange="ajax_call(this)">
+				<option value="-1">Page Visit History</option>   
+				 <?foreach ( $_SESSION['visits_history'] as $visit ) { ?>
+				<option value= "<?=$visit[0]?>"><?= $visit[1] . ' -- ' . date("Y-m-d H:i:s", strtotime($visit[2]))?></option> 
+				<? }?> 
+			</select>
+		</form>
+	</div>
+	
+    
+    <footer>
+      <h4><small><b>Ben Heitkotter &copy;2017</b></small></h4>
+    </footer>
+    
+  </div>
+</body>  
+</html>

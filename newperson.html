@@ -1,0 +1,131 @@
+<?
+require 'init.php';
+?>
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>formpage</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<style>
+			.error {
+				color: #F00;
+				background-color: #FFF;
+			}
+		</style>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	</head>
+	<body>
+		<a href="http://csci.lakeforest.edu/~heitkotterbj/csci488/">Back</a><br><br>
+		<form name="newaccount" id="newaccount" action="createaccount.php" method="POST" novalidate>
+
+			<div class ="container">
+			<div class="form-group">
+			<div class="row">
+				<div class="col-md-4">
+					<label for="usr_name">Please Enter Your Email:</label> 
+					<input id="usr_name" type="text" name="usr_name" class="form-control" placeholder="my@email.com"/>
+					<span style="color:red;"><?if(isset($_REQUEST['duplicate'])){echo 'this email is already being used.';}?></span>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-4">
+					<label for="pword1">Password:</label> 
+					<input id="pword1" type="password" name="pword1" class="form-control" placeholder="*****"/> 
+				</div>	
+			</div>
+			<div class="row">
+				<div class="col-md-4">
+					<label for="pword2">Re-enter Your Password:</label> 
+					<input id="pword2" type="password" name="pword2" class="form-control" placeholder="*****"/> 
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-4">
+					<img id="captcha" src="http://csci.lakeforest.edu/~heitkotterbj/csci488/securimage/securimage_show.php" alt="CAPTCHA Image"><br><br>
+					<input type="text" name="captcha_code" size="10" maxlength="6" />
+					<span style="color:red;"><?if(isset($_GET['captcha'])){echo 'Incorrect text, please try again.';}?></span>
+					<a href="#" onclick="document.getElementById('captcha').src = '/securimage/securimage_show.php?' + Math.random(); return false">[ Different Image ]</a>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-2">
+					<label for="sub"></label> 
+					<input id="sub" class="form-control" type="submit"/>
+				</div>
+			</div>
+		</form>
+		<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/jquery.validate.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/additional-methods.min.js"></script>
+		<script type="text/javascript">
+	
+		$().ready(function() {
+			jQuery.validator.addMethod("nowhite", function(value, element) 
+			{
+         // allow any non-whitespace characters as the host part
+				return this.optional( element ) || /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]/.test( value );
+			}, 'nice try, but please try again');
+			
+			jQuery.validator.addMethod("samepw", function(value, element) 
+			{
+				var pword = $('#pword1').val();
+				var checkpword = $('#pword2').val();
+				return (pword == checkpword);
+			}, 'This password does not match');
+			
+			$("#newaccount").validate({
+				
+				rules: 
+				{
+					usr_name: {
+						required: true,
+						email:true
+					},
+				
+					pword1: {
+						required: true,
+						minlength: 8,
+						nowhite: true
+					},
+				
+					pword2:{ 
+						required: true,
+						samepw: true
+					},
+					
+				},
+				
+				messages: 
+				{
+					usr_name: 
+					{
+						required: "please enter a valid email",
+						email: "the email you entered was not valid",
+					},
+					pword1: {
+						required: "please enter a password",
+						minlength: "the password must be at least 8 characters long", 
+					},
+					pword2: {
+						required: "please re-enter the desired password", 
+					},
+				
+				},
+				
+				highlight: function (element) {
+					$(element).parent().addClass('error')
+				},
+				unhighlight: function (element) {
+					$(element).parent().removeClass('error')
+				}
+		
+			});
+
+		});
+	
+		</script>	
+		
+	</body>
+</html>

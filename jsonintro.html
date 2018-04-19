@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>HTML DOM Element Factory Example</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="description" content="cs488 project">
+  <meta name="keywords" content="HTML, CS488, Server">
+  <meta name="author" content="Ben Heitkotter">
+  
+  <script type="text/javascript">
+	
+	var str = '[{"animal_id":1,"animal_type":"dog","animal_breeds":[{"breed_id":1,"breed_name":"Beagle"},{"breed_id":2,"breed_name":"Poodle"},{"breed_id":3,"breed_name":"Hound"},{"breed_id":4,"breed_name":"Collie"}]},{"animal_id":2,"animal_type":"cat","animal_breeds":[{"breed_id":1,"breed_name":"Tabby"},{"breed_id":2,"breed_name":"Calico"},{"breed_id":3,"breed_name":"Persian"}]},{"animal_id":3,"animal_type":"bat","animal_breeds":[{"breed_id":1,"breed_name":"Hoary"},{"breed_id":2,"breed_name":"Egyptian Fruit"},{"breed_id":3,"breed_name":"Spotted"},{"breed_id":4,"breed_name":"Leaf-nosed"}]},{"animal_id":4,"animal_type":"rat","animal_breeds":[{"breed_id":1,"breed_name":"Sewer"},{"breed_id":2,"breed_name":"Bilge"},{"breed_id":3,"breed_name":"Dirty"}]}]';
+    
+    obj = JSON.parse(str);
+	function rollout(anobj) {
+      
+      var chosenone = anobj.options.selectedIndex;
+	  var idname = anobj.options[chosenone].value;
+	  var ddown = document.createElement("select");
+	  var option = document.createElement("option");
+	  option.text = "choose a " + idname;
+	  ddown.add(option);
+      for (i=0; i< obj[chosenone-1].animal_breeds.length; i++){
+		var option = document.createElement("option");
+		option.value = obj[chosenone-1].animal_breeds[i].breed_id;
+		option.text = obj[chosenone-1].animal_breeds[i].breed_name; 
+		ddown.add(option);
+	  }
+      var elim = document.getElementById("ne");
+	  elim.innerHTML="";
+	  elim.appendChild(ddown);
+    }
+	
+  </script>
+</head>
+	
+	<div id="ne">
+		<select onchange= "rollout(this)">
+			<option value="dummy">Choose an animal</option>
+			<option value="dog">K9 Friends</option>
+			<option value="cat">Feline</option>
+			<option value="bat">rats with wings</option>
+			<option value="rat">rats</option>  
+		</select>
+	</div>
+</html>

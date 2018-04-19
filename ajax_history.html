@@ -1,0 +1,122 @@
+<?php
+	session_start();
+	//$cookie_name = "fitfo";
+	//$date = date("Y/m/d H:s");
+	/*if ( !isset($_SESSION['visits_history']) ) {
+		$_SESSION['visits_history'] = array();
+	}
+	if(!isset($_COOKIE["fitfo"])) 
+	{
+		$cookie_value = 1;
+		setcookie($cookie_name, $cookie_value, time() + (86400 * 30*365), "/"); // 86400 = 1 day
+		$sessinfo = array( 0,$_SERVER[REMOTE_ADDR], $date, $_SERVER[REMOTE_PORT], $_SERVER[HTTP_USER_AGENT]);
+		array_push($_SESSION['visits_history'], $sessinfo);
+	} 
+	else 
+	{
+		$cookie_value = $_COOKIE["fitfo"];
+		setcookie($cookie_name, $cookie_value, time() - 3600);
+		$cookie_value += 1;
+		setcookie($cookie_name, $cookie_value, time() + (86400 * 30*365), "/");
+		$sessinfo = array(count($_SESSION['visits_history']), $_SERVER[REMOTE_ADDR], $date, $_SERVER[REMOTE_PORT], $_SERVER[HTTP_USER_AGENT]);
+		array_push($_SESSION['visits_history'], $sessinfo);
+	}*/
+	define('DB_SERVER','localhost');
+	define('DB_USERNAME','csci488_fall17');
+	define('DB_PASSWORD','SeNSeMdb1');
+	define('DB_DATABASE','csci488_fall17');
+
+	mysql_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD) or die("Could not connect");
+	mysql_select_db(DB_DATABASE) or die("Could not select database " . DB_DATABASE);
+	
+	$id = '';
+	$ip = $_SERVER[REMOTE_ADDR];
+	$date = $_SERVER[REQUEST_TIME];
+	$port = $_SERVER[REMOTE_PORT];
+	$agent = $_SERVER[HTTP_USER_AGENT];
+	
+	$georesult = file_get_contents("https://tools.keycdn.com/geo.json?host=".$ip); 
+	$georesult = json_decode($georesult);
+	$zip = $georesult->data->geo->postal_code;
+	$city = $georesult->data->geo->city;
+	
+	$query = "INSERT INTO heitkotter_test VALUES ('$id', '$ip', $date, $port, '$agent', $zip, '$city')";
+	$result = mysql_query($query);
+	
+	$query = "SELECT * FROM heitkotter_test ";
+	$result = mysql_query($query);
+	$num_rows = mysql_num_rows($result);
+?>
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+  		<meta name="description" content="cs488 project">
+  		<meta name="keywords" content="HTML, CS488, Server">
+  		<meta name="author" content="Ben Heitkotter">
+  		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<script type="text/javascript">
+			
+			function ajax_call(obj) {
+				var chosenone = obj.options.selectedIndex
+				var hist_id = obj.options[chosenone].value;
+				var server_script = 'ajaxserver.php';
+				if (hist_id<1)
+				{
+					document.getElementById("dump").innerHTML= "";
+				}
+				else{
+					$.ajax({
+						type: 'GET',
+						url: server_script,
+						dataType: 'json',
+						data: $('#visits').serialize(),
+						error: error_callback,
+						success: success_callback,
+					});
+				}
+			}
+     
+     
+			function success_callback(res) 
+			{
+				var inject = "The IP address is "+res[1]+'.<br>'+
+				"They accessed this site on " +res[2]+'.<br>'+
+				"The remote port is "+res[3]+'.<br>'+
+				"The user agent is "+res[4]+'.<br>';
+				
+				var cbox = document.getElementById('geo');
+				if ( cbox.checked ) {
+					inject += "City: " + res[6] + '.<br>' +
+							"ZIP: " + res[5] + '.<br>';
+							
+				}
+				document.getElementById('dump').innerHTML= inject;
+			}
+     
+     
+			function error_callback(req, status, err) 
+			{
+				console.log("OOPS: " , req, status, err )
+			}
+			
+		</script>
+	
+	</head>
+	<div id="dump"></div>
+	<div id="drop">
+		<form id="visits" >
+			<select name="selected" onchange="ajax_call(this)">
+				<option value="0">Page Visit History</option>   
+				<? if ($num_rows>0) { ?>
+					<? while ( $row = mysql_fetch_assoc($result) ) { ?>
+						<option value= "<?=$row['HIST_ID']?>"><?= $row['IP_ADDR'] . ' -- ' . date("Y-m-d H:i:s", $row['ACC_DATE'])?></option> 
+				<? }
+				}?> 
+			</select><br><br>
+			Also return visit geolocation data: <input type="checkbox" id = "geo" name="geo" value="yes">
+		</form>
+	</div>
+	<span><a href="http://csci.lakeforest.edu/~heitkotterbj/csci488/index">back</a></span>
+</html>

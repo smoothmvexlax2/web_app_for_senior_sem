@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>JSON Test</title>
+  
+  <script type="text/javascript">
+  
+    var str = '[{"animal_id":1,"animal_type":"dog","animal_breeds":[{"breed_id":1,"breed_name":"Beagle"},{"breed_id":2,"breed_name":"Poodle"},{"breed_id":3,"breed_name":"Hound"},{"breed_id":4,"breed_name":"Collie"}]},{"animal_id":2,"animal_type":"cat","animal_breeds":[{"breed_id":1,"breed_name":"Tabby"},{"breed_id":2,"breed_name":"Calico"},{"breed_id":3,"breed_name":"Persian"}]},{"animal_id":3,"animal_type":"bat","animal_breeds":[{"breed_id":1,"breed_name":"Hoary"},{"breed_id":2,"breed_name":"Egyptian Fruit"},{"breed_id":3,"breed_name":"Spotted"},{"breed_id":4,"breed_name":"Leaf-nosed"}]},{"animal_id":4,"animal_type":"rat","animal_breeds":[{"breed_id":1,"breed_name":"Sewer"},{"breed_id":2,"breed_name":"Bilge"},{"breed_id":3,"breed_name":"Dirty"}]}]';
+    
+    var obj = JSON.parse(str);
+    console.log( obj );
+    
+    /*
+     Open the JS console to explore the structure of the data.  It's an array of objects.  
+     One of the properties of each of those objects is also an array.
+     
+     Each object has this structure;
+     
+     { "animal_id":1,
+       "animal_type":"dog",
+       "animal_breeds": [ {"breed_id":1,"breed_name":"Beagle"},
+                          {"breed_id":2,"breed_name":"Poodle"},
+                          {"breed_id":3,"breed_name":"Hound"},
+                          {"breed_id":4,"breed_name":"Collie"} 
+                        ]
+     }
+    */
+ 
+  </script>
+</head>
+<body> 
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<style>
+			div.med {
+				background-color: cyan;
+				z-index:1;
+				position: absolute;
+				bottom: 100px;
+				left: 16px;
+			}
+			
+			div.first{
+				height: 250px;
+				width:200px;
+				background-color: #808080;
+				position: fixed;
+				z-index: -1;
+			}
+		
+			div.two{
+				height: 150px;
+				width:100px;
+				background-color: blue;
+				position: absolute;
+				z-index: 0;
+			}
+			
+			p.flex{
+				position: absolute;
+				bottom: 20px;
+				left: 16px;
+				font-size: 18px;
+			}
+			
+			p.yeah{
+				float: right;
+				width: 30%;
+			}
+
+			@media only screen and (max-width: 768px) {
+			div.med {
+				background-color: lightblue;
+				z-index:1;
+				position: absolute;
+				bottom: 100px;
+				left: 16px;
+			}
+			div.first{
+				height: 150px;
+				width:100px;
+				background-color: #808080;
+				position: fixed;
+				z-index: -1;
+			}
+		
+			div.two{
+				height: 100px;
+				width:65px;
+				background-color: blue;
+				position: absolute;
+				z-index: 0;
+			}
+			
+			p.flex{
+				position: absolute;
+				bottom: 20px;
+				left: 16px;
+				font-size: 10px;
+			}
+			
+			p.yeah{
+				float: right;
+				width: 30%;
+			}
+			}
+			@media only screen and (min-width: 769px) and (max-width: 999) {
+			div.med {
+				background-color: green;
+				z-index:1;
+				position: absolute;
+				bottom: 100px;
+				left: 16px;
+			}
+			div.first{
+				height: 100px;
+				width:75px;
+				background-color: #808080;
+				position: fixed;
+				z-index: 0;
+			}
+		
+			div.two{
+				height: 75px;
+				width:50px;
+				background-color: blue;
+				position: absolute;
+				z-index: -1;
+			}
+			
+			p.flex{
+				position: absolute;
+				bottom: 8px;
+				left: 16px;
+				font-size: 16px;
+			}
+			
+			p.yeah{
+				float: right;
+				width: 30%;
+			}
+			}
+			
+		</style>
+	</head>
+	<body>
+		<div class="first">
+		
+		</div>
+		<div class="two">
+		
+		</div>
+		<div class="med">
+			<p class="stuff">I am a responsive block</p>
+		</div>
+		<p class="yeah">
+			<small>If the z index is not ordered in the style sheet, the order of the blocks is 
+			based on chronological order of each block created by the html file.</small>
+		</p>
+		<p class="flex">
+			The first year Chrome, Internet Explore, and Firefox had basic support for flexboxes with out prefixes still was October
+			17th, in 2013.<br>
+			May 4th, in 2016 was the first year Multi-column was supported by Chrome, Internet Explore, Opera, and Safari. 
+		</p>
+
+	</body>
+</html> 

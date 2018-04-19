@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>formpage</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<script type="text/javascript">
+			function getv(obj){
+				var cal = obj.value;
+				document.getElementById('returnvalue').innerHTML = "" + cal;
+			}
+		</script>
+	</head>
+	<body>
+		<a href="http://csci.lakeforest.edu/~heitkotterbj/csci488/formdata_listing.php">Listing page</a><br><br>
+		<form name="stuff1" id="stuff1" action="exercise_form.php" method="POST" novalidate>
+			<input type="hidden" name="task" value="save">
+			<div class ="container">
+			<div class="form-group">
+			<div class="row">
+				<div class="col-md-4">
+					<label for="mail">Please Enter your Email:</label> 
+					<input id="mail" type="email" name="mail" class="form-control" placeholder="duecebigalo@mailgigilo.com"/>
+    
+					<br /><br />
+					<label for="pw">Password:</label> 
+					<input id="pw" type="password" name="pw" class="form-control" placeholder="*****"/> 
+				</div>	
+			</div>
+				<div class="row">
+					<div class="col-md-3">
+						<label for="age">Select age:</label>
+						<input id="age" type="number" name="age" value="" min ="14" max ="110"/> 
+					</div>
+					<div class="col-md-3">
+						<label for="gender"> Select Gender</label>
+							<div class="radio">
+								<label><input type="radio" name="gender" value="female"> Female</label>
+							</div>
+							<div class="radio">
+								<label><input type="radio" name="gender" value="male"> Male</label>
+							</div>
+							<div class="radio">
+								<label><input type="radio" name="gender" value="transgender"> Transgender</label>
+							</div>
+							<div id="gendererror"></div>
+					</div>
+					<div class="col-md-6">
+						<label for="arange">caloric intake per day:</label><span class="label label-primary" id="returnvalue">3250</span><br>
+						<input id= "arange" type="range" name="arange" min="500" max="6000" onchange="getv(this)"/>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<div class="checkbox">
+							<label><input id="exercise03" name="exercise03" type="checkbox" />exercise 0-3 times a week</label>
+						</div>
+						<div class="checkbox">
+							<label><input id="exercise45" name="exercise45" type="checkbox" />exercise 4-5 times a week</label>
+						</div>
+						<div class="checkbox">
+							<label><input id="exercise67" name="exercise67" type="checkbox" />exercise 6-7 times a week</label>
+						</div>
+						<div id="excerciseerror"></div>
+					</div>
+					<div class="col-md-6">
+						<label for="yah">Pick a diet</label>
+						<ul id="yah">
+							<label class="radio-inline"><input type="radio" name="diet" value="nodiet"> No structure</label>
+							<label class="radio-inline"><input type="radio" name="diet" value="vegetarian"> vegetarian</label>
+							<label class="radio-inline"><input type="radio" name="diet" value="vegan"> vegan</label>
+							<label class="radio-inline"><input type="radio" name="diet" value="macro"> macro counting</label>
+							<label class="radio-inline"><input type="radio" name="diet" value="paleo"> paleo</label>
+						</ul>
+						<div id="dieterror"></div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<label for="details">Details:</label>
+							<textarea id="details" name="details" class="form-control" placeholder="add any specific details..." rows=10 cols=50></textarea>
+					</div>
+				</div>
+				
+				<div class="row">
+					<div class="col-md-3">
+						<label for="wostyle">pick a work out style</label>
+						<input id= "wostyle" name="wostyle" class="form-control" list="wostyles">
+							<datalist id="wostyles">
+  								<option value="Powerlift">powerlift</option>
+  								<option value="Endurance">endurance</option>
+  								<option value="Strongman">strongman</option>
+  								<option value="BodyBuilding">bodybuilding</option>
+  								<option value="CrossFit">crossfit</option>
+								<option value="Yoga">yoga</option>
+								<option value="Anything" >anything</option>
+							</datalist>
+					</div>
+					<div class="col-md-3">
+						<label for="goals">pick your goals</label>		
+						<select id="goals" name="goals[]" class="form-control" multiple>
+							<option value="gain muscle">gain muscle</option>
+  							<option value="lose weight">lose weight</option>
+  							<option value="better mobility">better mobility</option>
+  							<option value="increase stamina">increase stamina</option>
+						</select>	
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-3">
+						<input class="form-control" type="submit"/><input class="form-control" type="reset"/>
+					</div>
+				</div>
+			</div>
+			</div>
+		</form>
+
+	<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/jquery.validate.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/additional-methods.min.js"></script>
+	<script type="text/javascript">
+	
+	$().ready(function() {
+		jQuery.validator.addMethod("nowhite", function(value, element) 
+		{
+         // allow any non-whitespace characters as the host part
+			return this.optional( element ) || /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]/.test( value );
+		}, 'nice try, but please try again');
+		
+		$("#stuff1").validate({
+				
+			rules: 
+			{
+				mail: {
+					required: true,
+					email:true
+				},
+				
+				pw: {
+					required: true,
+					minlength: 5,
+					nowhite: true
+				},
+				
+				age:{ 
+					required: true,
+					digits: true
+				},
+					
+				arange: "required",
+				
+				exercise03: {
+					required:{
+						depends: function(element) {
+							return ($('#exercise45').is(':unchecked') && $('#exercise67').is(':unchecked'))
+						}
+					
+					}
+				},
+				
+				
+				diet: "required",
+				gender: "required",
+	
+				details: {
+					required: true,
+					minlength: 1,
+					maxlength: 140,
+					nowhite: true
+				},
+				"goals[]": {
+					required: true,
+				},
+				
+				wostyle: {
+					required: true,
+				},
+				
+			},
+			messages: 
+			{
+				mail: 
+				{
+					required: "please enter a valid email",
+					email: "the email you entered was not valid",
+				},
+				pw: {
+					required: "please enter a password",
+					minlength: "the password must be at least 5 characters long", 
+				},
+				age: "Please enter your age",
+				arange: "Please enter your caloric intake",
+				exercise03: "Please check a box",
+				wostyle: "please select a work out style",
+				diet: "please pick a diet",
+				details: {
+					required: "please add details",
+					minlength: "please add something",
+					maxlength: "no more than 140 characters",
+					nowhite: "nice try, but please add details"
+				},
+				gender: "Please pick a gender",
+				"goals[]": "Please pick at least 1 goal"
+			},
+			errorPlacement : function(error, element) {
+				if($(element).prop("name") === "diet") {
+					$("#dieterror").append(error);
+				}
+				else if($(element).prop("name") === "gender") {
+					$("#gendererror").append(error);
+				}
+				else if($(element).prop("name") === "exercise03") {
+					$("#exerciseerror").append(error);
+				}
+				else {
+					error.insertAfter(element); // default error placement.
+				}
+			}
+		
+		});
+
+	});
+	
+	</script>	
+	</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script type="text/javascript">
+		var w = screen.width;
+		var h = screen.height;
+		
+		function win()
+		{
+			window.open("http://csci.lakeforest.edu/~heitkotterbj/csci488/_blank", width = w, height = h);
+		}
+		function mOver(obj)
+		{
+			obj.innerHTML="click me";
+		}
+		
+		function mOut(obj)
+		{
+			obj.style.backgroundColor = "red";
+			obj.innerHTML = "no more";
+				
+		}
+		function hide(obj)
+		{
+			obj.style.visibility = "hidden";
+		}
+		
+		function reloc(obj)
+		{
+			obj.className = "mover";
+		}
+		
+		
+	</script>
+	<style>
+		div.mover{
+			background-color: green;
+			position: absolute;
+			bottom: 400px;
+			right: 150px;
+		}
+		
+		button.moves{
+			background-color: green;
+			position: absolute;
+			top: 400px;
+			left: 150px;
+		}
+		div.butt
+		{
+			background-color: grey;
+			position: absolute;
+			width: 40%;
+			border: 2px solid black;
+		}
+		div.pop
+		{
+			background-color: blue;
+			position: absolute;
+			width: 20%;
+			border: 1px solid black;
+			bottom: 350px;
+		}
+	</style>
+	
+</head>
+<body>
+
+	<div class="butt" onmouseover="mOver(this)" onmouseout="mOut(this)" onclick="hide(this)">
+		guess what?
+	</div>
+	<div class="pop" type= "button" onclick= "win()">
+		click for a suprise
+	</div>
+	
+	<button class="moves" onclick="reloc(this)">
+		where am I?
+	</button>
+
+</body>
+</html> 
